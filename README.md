@@ -12,7 +12,7 @@
 
 **Solution:**
 
-* Just include Validy into your call and either use setter in order to trigger validation process, or explicitly call **validate!** method.
+* Just include Validy into your class and either use setter in order to trigger validation process, or explicitly call **validate!** method.
 
 **Notes:**
 
