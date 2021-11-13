@@ -8,7 +8,7 @@
 
 * Want to have a easy way to validate instance variables in plain ruby object? 
 * Wants to update you class with validation helpers like: **validate!, valid?, errors** ..?
-* Have a nice coding standard for services where responsibility is validation?
+* Have a fabulous coding standard for services where responsibility is validation?
 
 **Solution:**
 
@@ -51,13 +51,18 @@ class ValidyFoo
   def foo_valid?
     @foo > 2
   end
+  
+  def inner_setter
+    @foo = -3
+    #explicit validation when its a part of inner logic, not initializer or setter 
+    validate!
+  end
 end
 
 # ...
 
 # valid 
 pry(main)> instance = ValidyFoo.new(4)
-pry(main)> instance.validate!
 pry(main)> instance.valid?
 
 => true
@@ -68,7 +73,6 @@ pry(main)> instance.errors
 
 # invalid 
 pry(main)> instance = ValidyFoo.new(0)
-pry(main)> instance.validate!
 pry(main)> instance.valid?
 
 => false
@@ -84,8 +88,14 @@ pry(main)> instance
 # set valid value over the setter
 pry(main)> instance.foo = 7
 pry(main)> instance.valid?
-# no need to call validate!
+
 => true
+
+# inner setter
+pry(main)> instance.inner_setter
+pry(main)> instance.valid?
+
+=> false
 ```
 
 ### Notes

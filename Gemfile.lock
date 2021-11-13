@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    validy (0.0.2)
+    validy (1.0.0)
 
 GEM
   remote: http://rubygems.org/

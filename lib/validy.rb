@@ -4,6 +4,7 @@ module Validy
   def self.included(base)
     base.extend(ClassMethods)
     base.send(:include, InstanceMethods)
+    base.prepend(Initializer)
   end
 
   module InstanceMethods
@@ -49,6 +50,13 @@ module Validy
           validate!
         end
       end
+    end
+  end
+  
+  module Initializer
+    def initialize(*)
+      super
+      validate!
     end
   end
 end

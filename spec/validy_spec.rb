@@ -16,20 +16,23 @@ class ValidyFoo
   def foo_valid?
     @foo > 2
   end
+
+  def inner_setter
+    @foo = -3
+    validate!
+  end
 end
 
 describe Validy do
-  describe '#validate!' do
+  describe '#initializer' do
     context 'when valid instance' do
       let(:valid_instance) { ValidyFoo.new(4) }
       
       it 'valid? returns true' do
-        valid_instance.validate!
         expect(valid_instance.valid?).to eq true
       end
 
       it 'errors returns {}' do
-        valid_instance.validate!
         expect(valid_instance.errors).to eq({})
       end
     end
@@ -38,12 +41,10 @@ describe Validy do
       let(:invalid_instance) { ValidyFoo.new(1) }
       
       it 'valid? returns false' do
-        invalid_instance.validate!
         expect(invalid_instance.valid?).to eq false
       end
 
       it 'errors returns {}' do
-        invalid_instance.validate!
         expect(invalid_instance.errors).to eq({:foo=>"No way, it is a rick!"})
       end
     end
@@ -72,6 +73,22 @@ describe Validy do
       end
 
       it 'errors returns {}' do
+        expect(instance.errors).to eq({:foo=>"No way, it is a rick!"})
+      end
+    end
+  end
+
+  describe '#inner_setter' do
+    let(:instance) { ValidyFoo.new(5) }
+    
+    context 'when set class variable via method' do
+      it 'valid? returns false' do
+        instance.inner_setter
+        expect(instance.valid?).to eq false
+      end
+
+      it 'errors returns {}' do
+        instance.inner_setter
         expect(instance.errors).to eq({:foo=>"No way, it is a rick!"})
       end
     end
