@@ -82,7 +82,6 @@ pry(main)> instance
 => #<ValidyFoo:0x00007fd90a840450 @errors={:foo=>"No way, it is a rick!"}, @foo=1, @fool=nil, @valid=false>
 
 # set valid value over the setter
-
 pry(main)> instance.foo = 7
 pry(main)> instance.valid?
 # no need to call validate!
