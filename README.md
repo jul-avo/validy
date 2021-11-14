@@ -18,7 +18,10 @@
 
 * Wants to force raise an exception while creating an object if validation failed? Set **validy!** params instead of **validy**:
 ```ruby
-validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }
+class ValidyFoo
+  include Validy
+  
+  validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }
 
 ..
 # foo_valid? returns false
@@ -119,5 +122,3 @@ pry(main)> instance.validate!
 
 => Validy::Error: '{"foo":"No way, it is a rick!"}'
 ```
-
-### Notes
