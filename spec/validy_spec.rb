@@ -4,6 +4,8 @@ require 'spec_helper'
 
 class ValidyFoo
   include Validy
+  
+  attr_accessor :foo
 
   validy foo: { with: :foo_valid?, error: "No way, it is a rick!" },
            fool: { with: ->proc{ true }, error: "true is our all" }
@@ -51,7 +53,7 @@ describe Validy do
   end
   
   describe '#setters' do
-    let(:instance) { ValidyFoo.new(1) }
+    let(:instance) { ValidyFoo.new(1, 8) }
     
     context 'when set valid value over the setter' do
       before { instance.foo = 5 }
@@ -74,6 +76,12 @@ describe Validy do
 
       it 'errors returns {}' do
         expect(instance.errors).to eq({:foo=>"No way, it is a rick!"})
+      end
+    end
+    
+    context 'when no setter defined' do
+      it 'will not create a setter under the hood' do
+        expect{ instance.fool }.to raise_error
       end
     end
   end

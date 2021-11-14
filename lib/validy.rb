@@ -44,6 +44,8 @@ module Validy
       end
 
       attributes.each do |attr, _|
+        next unless self.instance_methods.include?("#{attr}=".to_sym)
+
         define_method("#{attr}=") do |value|
           instance_variable_set("@#{attr}", value)
 
@@ -56,6 +58,7 @@ module Validy
   module Initializer
     def initialize(*)
       super
+
       validate!
     end
   end
