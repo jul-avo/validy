@@ -43,6 +43,8 @@ class ValidyFoo
   validy foo: { with: :foo_valid?, error: "No way, it is a rick!" },
          fool: { with: -> proc{ true }, error: "true is our all" }
 
+  attr_accessor :foo
+
   def initialize(foo=nil, fool=nil)
     @foo = foo
     @fool = fool
