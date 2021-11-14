@@ -22,9 +22,11 @@ class ValidyFoo
   include Validy
   
   validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }
-
+  
+  def foo_valid?
+    @foo > 2
+  end
 ..
-# foo_valid? returns false
 pry(main)> ValidyFoo.new(0)
 
 => Validy::Error: '{"foo":"No way, it is a rick!"}'
