@@ -21,7 +21,7 @@ class ValidyFoo
 
   def inner_setter
     @foo = -3
-    validate!
+    validate
   end
 end
 
@@ -48,6 +48,14 @@ describe Validy do
 
       it 'errors returns {}' do
         expect(invalid_instance.errors).to eq({:foo=>"No way, it is a rick!"})
+      end
+      
+      context 'when validy!' do
+        before { ValidyFoo.validy!(foo: { with: :foo_valid?, error: "No way, it is a rick!" }) }
+        it 'raise error' do
+          expect{ ValidyFoo.new(1) }
+            .to raise_error(Validy::Error).with_message('{"foo":"No way, it is a rick!"}')
+        end
       end
     end
   end
@@ -82,6 +90,15 @@ describe Validy do
     context 'when no setter defined' do
       it 'will not create a setter under the hood' do
         expect{ instance.fool }.to raise_error
+      end
+    end
+
+    context 'when validy!' do
+      before { ValidyFoo.validy!(foo: { with: :foo_valid?, error: "No way, it is a rick!" }) }
+      it 'raise error' do
+        valid_instance = ValidyFoo.new(7)
+        expect{ valid_instance.foo = 0 }
+          .to raise_error(Validy::Error).with_message('{"foo":"No way, it is a rick!"}')
       end
     end
   end

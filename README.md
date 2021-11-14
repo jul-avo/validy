@@ -7,7 +7,7 @@
 **Problem:**
 
 * Want to have a easy way to validate instance variables in plain ruby object? 
-* Wants to update you class with validation helpers like: **validate!, valid?, errors** ..?
+* Wants to update you class with validation helpers like: **validate, validate!, valid?, errors** ..?
 * Have a fabulous coding standard for services where responsibility is validation?
 
 **Solution:**
@@ -16,7 +16,16 @@
 
 **Notes:**
 
-* Simple as that. Keep tracking.
+* Wants to force raise an exception while creating an object if validation failed? Set **validy!** params instead of **validy**:
+```ruby
+validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }
+
+..
+# foo_valid? returns false
+pry(main)> ValidyFoo.new(0)
+
+=> Validy::Error: '{"foo":"No way, it is a rick!"}'
+```
 
 ## Install
 
@@ -56,8 +65,8 @@ class ValidyFoo
   
   def inner_setter
     @foo = -3
-    #explicit validation when its a part of inner logic, not initializer or setter 
-    validate!
+    #explicit validation call when its a part of inner logic, not initializer or setter 
+    validate
   end
 end
 
@@ -93,11 +102,22 @@ pry(main)> instance.valid?
 
 => true
 
-# inner setter
+# inner setter with validate
 pry(main)> instance.inner_setter
 pry(main)> instance.valid?
 
 => false
+
+# call validate, so silent check will be performed
+pry(main)> instance.validate
+pry(main)> instance.valid?
+
+=> false
+
+# call validate! so error will be raise in case of failing validation
+pry(main)> instance.validate!
+
+=> Validy::Error: '{"foo":"No way, it is a rick!"}'
 ```
 
 ### Notes
