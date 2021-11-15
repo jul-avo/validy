@@ -30,6 +30,10 @@ class ValidyFoo
 pry(main)> ValidyFoo.new(0)
 
 => Validy::Error: '{"foo":"No way, it is a rick!"}'
+
+pry(main)> ValidyFoo.new
+
+=> Validy::Error: '{"foo":"No way, it is a rick!"}'
 ```
 
 ## Install
