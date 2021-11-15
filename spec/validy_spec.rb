@@ -16,7 +16,29 @@ class ValidyFoo
   end
 
   def foo_valid?
-    @foo > 2
+    @foo && @foo > 2
+  end
+
+  def inner_setter
+    @foo = -3
+    validate
+  end
+end
+
+class RaiseableValidyFoo
+  include Validy
+
+  attr_accessor :foo
+
+  validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }, fool: { with: ->proc{ true }, error: "true is our all" }
+
+  def initialize(foo=nil, fool=nil)
+    @foo = foo
+    @fool = fool
+  end
+
+  def foo_valid?
+    @foo && @foo > 2
   end
 
   def inner_setter
@@ -46,14 +68,25 @@ describe Validy do
         expect(invalid_instance.valid?).to eq false
       end
 
-      it 'errors returns {}' do
+      it 'errors returns hash' do
         expect(invalid_instance.errors).to eq({:foo=>"No way, it is a rick!"})
+      end
+
+      it 'validate! raise an error' do
+        expect{ invalid_instance.validate! }
+          .to raise_error(Validy::Error).with_message('{"foo":"No way, it is a rick!"}')
+      end
+      
+      it 'validate returns false' do
+        expect(invalid_instance.validate).to eq false
       end
       
       context 'when validy!' do
-        before { ValidyFoo.validy!(foo: { with: :foo_valid?, error: "No way, it is a rick!" }) }
         it 'raise error' do
-          expect{ ValidyFoo.new(1) }
+          expect{ RaiseableValidyFoo.new(1) }
+            .to raise_error(Validy::Error).with_message('{"foo":"No way, it is a rick!"}')
+          RaiseableValidyFoo.new(6).foo = 7
+          expect{ RaiseableValidyFoo.new(1) }
             .to raise_error(Validy::Error).with_message('{"foo":"No way, it is a rick!"}')
         end
       end
@@ -93,10 +126,9 @@ describe Validy do
       end
     end
 
-    context 'when validy!' do
-      before { ValidyFoo.validy!(foo: { with: :foo_valid?, error: "No way, it is a rick!" }) }
+    context 'when raisy' do
       it 'raise error' do
-        valid_instance = ValidyFoo.new(7)
+        valid_instance = RaiseableValidyFoo.new(7)
         expect{ valid_instance.foo = 0 }
           .to raise_error(Validy::Error).with_message('{"foo":"No way, it is a rick!"}')
       end

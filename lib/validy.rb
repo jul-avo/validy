@@ -52,23 +52,27 @@ module Validy
       
       private
       
-      define_method :init_validy do |opts = {}|
+      define_method :init_validy do
         @errors = {}
         @valid = true
         @validy_options = {}
-        @validy_options.merge!(validy_raise: (opts[:validy_raise] || attributes[:validy_raise] || false))
+        @validy_options.merge!(validy_raise: (attributes&.[](:options)&.[](:raise) || false))
       end
 
       define_method :evaluate_validy do |opts = {}|
-        init_validy(opts)
-        allowed_variables = (instance_variables - [:@errors, :@valid, :@validy_options]).map{ |v| v.to_s[1..-1].to_sym }
-        attributes = attributes.slice(*allowed_variables)
+        @errors = {}
+        @valid = true
 
-        attributes.each do |attr, validator_options|
+        raiseable = (opts[:validy_raise].nil? ? (@validy_options[:validy_raise] || false) : opts[:validy_raise])
+
+        allowed_variables = (instance_variables - [:@errors, :@valid, :@validy_options]).map{ |v| v.to_s[1..-1].to_sym }
+        allowed_attributes = attributes.slice(*allowed_variables)
+
+        allowed_attributes.each do |attr, validator_options|
           unless trigger(validator_options[:with])
             errors[attr] = validator_options[:error] || "#{attr} is invalid"
             @valid = false
-            raise ::Validy::Error, @errors.to_json if @validy_options[:validy_raise]
+            raise ::Validy::Error, @errors.to_json if raiseable
 
             @valid
           end
@@ -79,8 +83,7 @@ module Validy
     end
     
     def validy!(attributes = {})
-      attributes.merge!(validy_raise: true)
-      validy(attributes)
+      validy(attributes.merge({options: { raise: true }}))
     end
   end
   
