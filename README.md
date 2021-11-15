@@ -24,7 +24,7 @@ class ValidyFoo
   validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }
   
   def foo_valid?
-    @foo > 2
+    @foo && @foo > 2
   end
 ..
 pry(main)> ValidyFoo.new(0)
@@ -65,7 +65,7 @@ class ValidyFoo
   end
 
   def foo_valid?
-    @foo > 2
+    @foo && @foo > 2
   end
   
   def inner_setter
