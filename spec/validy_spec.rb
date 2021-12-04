@@ -5,18 +5,23 @@ require 'spec_helper'
 class ValidyFoo
   include Validy
   
-  attr_accessor :foo
+  attr_accessor :foo, :fool
 
-  validy foo: { with: :foo_valid?, error: "No way, it is a rick!" },
-           fool: { with: ->proc{ true }, error: "true is our all" }
+  validy foo: { with: :bigger_than_two? , error: "No way, it is a rick!" },
+         fool: { with: :not_eq_to_ten? }
 
-  def initialize(foo=nil, fool=nil)
+  def initialize(foo=nil, fool=10)
     @foo = foo
     @fool = fool
   end
 
-  def foo_valid?
+  def bigger_than_two?
     @foo && @foo > 2
+  end
+  
+  def not_eq_to_ten?
+    add_error fool: "#{@fool} not eq to 10" unless @fool == 10
+    true
   end
 
   def inner_setter
@@ -30,7 +35,7 @@ class RaiseableValidyFoo
 
   attr_accessor :foo
 
-  validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }, fool: { with: ->proc{ true }, error: "true is our all" }
+  validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }
 
   def initialize(foo=nil, fool=nil)
     @foo = foo
@@ -62,14 +67,14 @@ describe Validy do
     end
 
     context 'when invalid instance' do
-      let(:invalid_instance) { ValidyFoo.new(1) }
+      let(:invalid_instance) { ValidyFoo.new(1, 11) }
       
       it 'valid? returns false' do
         expect(invalid_instance.valid?).to eq false
       end
 
       it 'errors returns hash' do
-        expect(invalid_instance.errors).to eq({:foo=>"No way, it is a rick!"})
+        expect(invalid_instance.errors).to eq({:foo=>"No way, it is a rick!", :fool=>"11 not eq to 10"})
       end
 
       it 'validate! raise an error' do
@@ -94,7 +99,7 @@ describe Validy do
   end
   
   describe '#setters' do
-    let(:instance) { ValidyFoo.new(1, 8) }
+    let(:instance) { ValidyFoo.new(1) }
     
     context 'when set valid value over the setter' do
       before { instance.foo = 5 }
@@ -122,7 +127,7 @@ describe Validy do
     
     context 'when no setter defined' do
       it 'will not create a setter under the hood' do
-        expect{ instance.fool }.to raise_error
+        expect{ instance.fooly }.to raise_error NoMethodError
       end
     end
 

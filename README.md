@@ -20,16 +20,32 @@
 ```ruby
 class ValidyFoo
   include Validy
-  
-  validy! foo: { with: :foo_valid?, error: "No way, it is a rick!" }
-  
-  def foo_valid?
+
+  attr_accessor :foo, :fool
+
+  validy! foo: { with: :bigger_than_two? , error: "No way, it is a rick!" },
+         fool: { with: :not_eq_to_ten? }
+
+  def initialize(foo=nil, fool=10)
+    @foo = foo
+    @fool = fool
+  end
+
+  def bigger_than_two?
+    # return boolean in order to evaluate validy
     @foo && @foo > 2
   end
-..
-pry(main)> ValidyFoo.new(0)
 
-=> Validy::Error: '{"foo":"No way, it is a rick!"}'
+  def not_eq_to_ten?
+    # add customized error from the validation method
+    add_error fool: "#{@fool} not eq to 10" unless @fool == 10
+    true
+  end
+..
+pry(main)> ValidyFoo.new(0, 11)
+# error message will be taken from the validy error attribute
+# if not set over the add_error method
+=> Validy::Error: '{"foo":"No way, it is a rick!", "fool": "11 not eq to 10"}'
 
 pry(main)> ValidyFoo.new
 
@@ -58,18 +74,28 @@ gem 'validy'
 class ValidyFoo
   include Validy
 
-  validy foo: { with: :foo_valid?, error: "No way, it is a rick!" },
-         fool: { with: -> proc{ true }, error: "true is our all" }
+  attr_accessor :foo, :fool
 
-  attr_accessor :foo
-
-  def initialize(foo=nil, fool=nil)
+  validy foo: { with: :bigger_than_two? , error: "No way, it is a rick!" },
+          fool: { with: :not_eq_to_ten? }
+  # error message takes by following priority: 
+  # either set by 'add_error' method or set by validy error: param or default one
+  
+  def initialize(foo=nil, fool=10)
     @foo = foo
     @fool = fool
   end
 
-  def foo_valid?
+  def bigger_than_two?
+    # return boolean in order to evaluate validy
     @foo && @foo > 2
+  end
+
+  def not_eq_to_ten?
+    # add customized error from the validation method
+    add_error fool: "#{@fool} not eq to 10" unless @fool == 10
+    # do not forget to return boolean value
+    true
   end
   
   def inner_setter
@@ -91,15 +117,15 @@ pry(main)> instance.errors
 
 => {}
 
-# invalid 
-pry(main)> instance = ValidyFoo.new(0)
+# set invalid value while instantiating
+pry(main)> instance = ValidyFoo.new(0, 11)
 pry(main)> instance.valid?
 
 => false
 
 pry(main)> instance.errors
 
-=> {:foo=>"No way, it is a rick!"}
+=> {:foo=>"No way, it is a rick!", :fool=>"11 not eq to 10"}
 
 pry(main)> instance
 

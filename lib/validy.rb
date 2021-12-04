@@ -18,6 +18,11 @@ module Validy
       @errors
     end
     
+    def add_error(args = {})
+      args.each { |k, v| @errors[k] = v }
+      false
+    end
+    
     private
 
     def trigger(handler, args = {})
@@ -70,7 +75,7 @@ module Validy
 
         allowed_attributes.each do |attr, validator_options|
           unless trigger(validator_options[:with])
-            errors[attr] = validator_options[:error] || "#{attr} is invalid"
+            errors[attr] ||= validator_options[:error] || "#{attr} is invalid"
             @valid = false
             raise ::Validy::Error, @errors.to_json if raiseable
 
@@ -88,6 +93,7 @@ module Validy
   end
   
   module Initializer
+    # initializer
     def initialize(*)
       init_validy
       super
