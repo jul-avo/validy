@@ -38,7 +38,10 @@ class ValidyFoo
 
   def not_eq_to_ten?
     # add customized error from the validation method
-    add_error fool: "#{@fool} not eq to 10" unless @fool == 10
+    unless @fool == 10
+      add_error fool: "#{@fool} not eq to 10"
+      return false
+    end
     true
   end
 ..
@@ -93,7 +96,10 @@ class ValidyFoo
 
   def not_eq_to_ten?
     # add customized error from the validation method
-    add_error fool: "#{@fool} not eq to 10" unless @fool == 10
+    unless @fool == 10
+      add_error fool: "#{@fool} not eq to 10"
+      return false
+    end
     # do not forget to return boolean value
     true
   end

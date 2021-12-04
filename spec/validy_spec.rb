@@ -20,7 +20,10 @@ class ValidyFoo
   end
   
   def not_eq_to_ten?
-    add_error fool: "#{@fool} not eq to 10" unless @fool == 10
+    unless @fool == 10
+      add_error fool: "#{@fool} not eq to 10"
+      return false
+    end
     true
   end
 
