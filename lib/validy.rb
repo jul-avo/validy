@@ -20,6 +20,7 @@ module Validy
     
     def add_error(args = {})
       args.each { |k, v| @errors[k] = v }
+      @valid = false
     end
     
     private
