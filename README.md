@@ -6,9 +6,9 @@
 
 **Problem:**
 
-* Want to have a easy way to validate instance variables in plain ruby object? 
-* Wants to update you class with validation helpers like: **validate, validate!, valid?, errors** ..?
-* Have a fabulous coding standard for services where responsibility is validation?
+* Want to have a easy way to validate instance variables in plain ruby object like in Active Record? 
+* Wants to easily enrich you class with validation helpers like: **validate, validate!, valid?, errors** ..?
+* Wants to standardize you code for services where responsibility is near to validation?
 
 **Solution:**
 
