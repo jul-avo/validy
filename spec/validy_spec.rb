@@ -8,7 +8,7 @@ class ValidyFoo
   attr_accessor :foo, :fool
 
   validy foo: { with: :bigger_than_two? , error: "No way, it is a rick!" },
-         fool: { with: :not_eq_to_ten? }
+         fool: { with: :eq_to_ten? }
 
   def initialize(foo=nil, fool=10)
     @foo = foo
@@ -19,7 +19,7 @@ class ValidyFoo
     @foo && @foo > 2
   end
   
-  def not_eq_to_ten?
+  def eq_to_ten?
     unless @fool == 10
       add_error fool: "#{@fool} not eq to 10"
       return false
